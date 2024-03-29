@@ -9,11 +9,7 @@ export async function POST(req: NextRequest) {
       return new NextResponse("You are not authenticated!", { status: 400 });
     }
     const { body, conversationId, image } = await req.json();
-    if (!body) {
-      return new NextResponse("You cannot send empty message!", {
-        status: 400,
-      });
-    }
+
     if (!conversationId) {
       return new NextResponse("ConversationId is missing!", {
         status: 400,

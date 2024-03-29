@@ -1,6 +1,6 @@
 "use client"
 import { FullConversationType } from '@/shared/types/Conversation'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { chatInputFormSchema, chatInputFormSchemaType, chatInputFormSchemaValidation } from './Forms/chat-input-form'
@@ -16,9 +16,11 @@ import { Input } from "@/shared/components/ui/input"
 import axios from 'axios'
 import { Button } from '@/shared/components/ui/button'
 import { ImageUp, SendHorizontal } from 'lucide-react'
+import { CldUploadButton } from "next-cloudinary"
 
 const ConversationForm = ({ conversation }: { conversation: FullConversationType }) => {
 
+    const [render, setRender] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null);
 
     const chatInputFormDefaultValue = {
@@ -35,6 +37,17 @@ const ConversationForm = ({ conversation }: { conversation: FullConversationType
         chatInputForm.reset()
     }
 
+    const handleImageUpload = async (result: any) => {
+        const imageUrl = result?.info?.secure_url
+        axios.post("/api/messages", {
+            image: imageUrl,
+            conversationId: conversation.id
+        })
+    }
+
+    useEffect(() => {
+        setRender(true)
+    }, [])
 
     useEffect(() => {
         if (inputRef && inputRef.current) {
@@ -42,11 +55,15 @@ const ConversationForm = ({ conversation }: { conversation: FullConversationType
         }
     }, [inputRef]);
 
+    if (!render) return null
+
     return (
         <div className="w-full  bg-white py-4 pl-3 gap-x-4 flex items-center">
-            <Button variant={"ghost"} className='bg-messangerBlue hover:bg-messangerBlue'>
-                <ImageUp className="size-7 text-white" />
-            </Button>
+            <CldUploadButton options={{ maxFiles: 1 }} uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME!} onSuccess={handleImageUpload}>
+                <Button variant={"ghost"} className='bg-messangerBlue hover:bg-messangerBlue'>
+                    <ImageUp className="size-7 text-white" />
+                </Button>
+            </CldUploadButton>
             <Form {...chatInputForm}>
                 <form onSubmit={chatInputForm.handleSubmit(onSubmit)} className='flex-1 flex items-center gap-x-4 pr-4'>
                     <FormField
