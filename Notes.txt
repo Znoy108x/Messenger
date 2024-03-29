@@ -1,8 +1,11 @@
 Steps
 - Auth Form
 - Prisma Schema
-
-
+- layout
+- mobile footer
+- desktop sidebar
+- getSession action
+- getUser action
 
 Packages
 - 
