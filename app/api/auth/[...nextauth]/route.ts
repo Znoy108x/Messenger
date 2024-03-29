@@ -37,6 +37,11 @@ export const NextAuthOptions: AuthOptions = {
             "User not present in the database! Please sign-up first."
           );
         }
+        if (!user.hashedPassword) {
+          throw new Error(
+            "User's hashedPassword not present in the data base."
+          );
+        }
         const isCorrectPassword = await bcrypt.compare(
           credentials.password,
           user.hashedPassword

@@ -1,9 +1,9 @@
 import React from 'react'
-import EmptyState from '../_components/EmptyState'
+import EmptyState from '../../_components/EmptyState'
 
 const UsersPage = () => {
     return (
-        <div className="hidden lg:block lg:pl-80 h-full">
+        <div className="grow hidden lg:block h-full w-full">
             <EmptyState />
         </div>
     )
