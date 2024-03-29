@@ -18,7 +18,6 @@ export const getCurrentUser = async () => {
     }
     return currentUser;
   } catch (err) {
-    console.log("getCurrentUser", err);
     return null;
   }
 };

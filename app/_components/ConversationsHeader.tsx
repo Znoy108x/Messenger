@@ -1,0 +1,49 @@
+"use client"
+import React, { useMemo } from 'react'
+import AvatarComp from './AvatarComp'
+import { FullConversationType } from '@/shared/types/Conversation'
+import { useOtherUser } from '@/shared/hooks/useOtherUser'
+import Link from 'next/link'
+import { ChevronLeft, EllipsisVertical } from 'lucide-react'
+import { Button } from '@/shared/components/ui/button'
+
+interface ConversationHeaderProps {
+    conversation: FullConversationType
+}
+
+const ConversationsHeader = ({
+    conversation
+}: ConversationHeaderProps) => {
+
+    const otherUserDetails = useOtherUser(conversation)
+    const statusText = useMemo(() => {
+        if (conversation.isGroup) {
+            return `${conversation.users.length} members`
+        }
+        return "Active"
+    }, [conversation])
+
+    return (
+        <div className="px-2 py-2 border-b-[1px] shadow-sm border-gray-100 flex items-center justify-between">
+            <div className="flex gap-x-8 items-center">
+                <div className="flex items-center">
+                    <Button variant={"ghost"}>
+                        <Link href="/conversations">
+                            <ChevronLeft className='text-messangerBlue size-7' />
+                        </Link>
+                    </Button>
+                    <AvatarComp user={otherUserDetails} />
+                </div>
+                <div className="flex flex-col">
+                    <span className="font-bold text-xl text-neutral-900 capitalize">{conversation.name || otherUserDetails.name}</span>
+                    <span className="text-neutral-500 text-sm font-normal">{statusText}</span>
+                </div>
+            </div>
+            <Button variant={"ghost"}>
+                <EllipsisVertical className='text-messangerBlue size-5' />
+            </Button>
+        </div>
+    )
+}
+
+export default ConversationsHeader

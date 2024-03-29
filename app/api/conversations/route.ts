@@ -79,7 +79,6 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json(newConversation);
   } catch (err) {
-    console.log("Conversation Creation Error");
     return new NextResponse("Something went wrong", { status: 501 });
   }
 }

@@ -19,6 +19,7 @@ const UserItem = ({ user }: { user: User }) => {
                 userId: user.id
             }).then(data => {
                 router.push(`/conversations/${data.data.id}`)
+                router.refresh()
             }).finally(() => {
                 setIsLoading(false)
             }),

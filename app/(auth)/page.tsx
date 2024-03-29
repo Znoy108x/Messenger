@@ -24,11 +24,6 @@ const Home = () => {
     const [loading, setLoading] = useState<boolean>(false)
     const router = useRouter()
     const session = useSession()
-    useEffect(() => {
-        if (session?.status === "authenticated") {
-            console.log(session)
-        }
-    }, [session])
 
     const toggleVariant = useCallback(() => {
         if (variant === "LOGIN") {

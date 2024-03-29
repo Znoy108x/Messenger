@@ -16,7 +16,6 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         } else if (session.status === "unauthenticated") {
             setChecking(false)
         }
-        console.log(session)
     }, [session, router])
 
     if (checking) {

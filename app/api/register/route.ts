@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json(user);
   } catch (err) {
-    console.log("USER-REGISTER-ERR", err);
     return new NextResponse("Something went wrong!", {
       status: 501,
     });
