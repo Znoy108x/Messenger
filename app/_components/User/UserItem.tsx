@@ -1,11 +1,10 @@
 "use client"
 import { User } from '@prisma/client'
 import React, { useCallback, useState } from 'react'
-import AvatarComp from './AvatarComp'
+import AvatarComp from '../UI/AvatarComp'
 import axios from "axios"
 import { useRouter } from 'next13-progressbar'
-import { Button } from '@/shared/components/ui/button'
-import { PromiseNotification } from './AxiosApiResNotification'
+import { PromiseNotification } from '../../../shared/lib/AxiosApiResNotification'
 
 const UserItem = ({ user }: { user: User }) => {
 
@@ -18,8 +17,7 @@ const UserItem = ({ user }: { user: User }) => {
             axios.post("/api/conversations", {
                 userId: user.id
             }).then(data => {
-                router.push(`/conversations/${data.data.id}`)
-                router.refresh()
+                router.push(`/conversations`)
             }).finally(() => {
                 setIsLoading(false)
             }),

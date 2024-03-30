@@ -1,6 +1,6 @@
 import React from 'react'
-import { loginFormSchemaType } from './Forms/login-form'
-import { registerFormSchemaType } from './Forms/register-form'
+import { loginFormSchemaType } from '../Forms/login-form'
+import { registerFormSchemaType } from '../Forms/register-form'
 import { z } from 'zod'
 import { UseFormReturn } from 'react-hook-form'
 import { Button } from "@/shared/components/ui/button"
@@ -14,21 +14,22 @@ import {
 } from "@/shared/components/ui/form"
 import { Input } from "@/shared/components/ui/input"
 
-interface RegisterFormProps {
+
+interface LoginFormProps {
     onSubmit: (values: z.infer<registerFormSchemaType | loginFormSchemaType>) => void,
-    registerForm: UseFormReturn<{
-        name: string;
+    loginForm: UseFormReturn<{
         email: string;
         password: string;
-    }, any, undefined>
+    }, any, undefined>,
+    makeItDisable: boolean
 }
 
-const RegisterForm = ({ registerForm, onSubmit }: RegisterFormProps) => {
+const LoginForm = ({ loginForm, onSubmit, makeItDisable }: LoginFormProps) => {
     return (
-        <Form {...registerForm}>
-            <form onSubmit={registerForm.handleSubmit(onSubmit)} className="space-y-6">
+        <Form {...loginForm}>
+            <form onSubmit={loginForm.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
-                    control={registerForm.control}
+                    control={loginForm.control}
                     name="email"
                     render={({ field }) => (
                         <FormItem>
@@ -41,20 +42,7 @@ const RegisterForm = ({ registerForm, onSubmit }: RegisterFormProps) => {
                     )}
                 />
                 <FormField
-                    control={registerForm.control}
-                    name="name"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Name</FormLabel>
-                            <FormControl>
-                                <Input placeholder="mark hokins" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={registerForm.control}
+                    control={loginForm.control}
                     name="password"
                     render={({ field }) => (
                         <FormItem>
@@ -66,12 +54,12 @@ const RegisterForm = ({ registerForm, onSubmit }: RegisterFormProps) => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className='w-full bg-messangerBlue hover:bg-sky-700' disabled={registerForm.formState.isSubmitting}>
-                    Sign Up
+                <Button type="submit" className='w-full bg-messangerBlue hover:bg-sky-700' disabled={loginForm.formState.isSubmitting || makeItDisable}>
+                    Sign In
                 </Button>
             </form>
         </Form>
     )
 }
 
-export default RegisterForm
+export default LoginForm

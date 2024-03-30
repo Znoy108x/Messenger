@@ -4,7 +4,6 @@ import { VenetianMask } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import {
     Command,
-    CommandEmpty,
     CommandGroup,
     CommandInput,
     CommandItem,
@@ -15,7 +14,7 @@ import {
     PopoverTrigger,
 } from "@/shared/components/ui/popover"
 import { User } from "@prisma/client"
-import AvatarComp from "./AvatarComp"
+import AvatarComp from "../UI/AvatarComp"
 
 interface Props {
     seenUsersList: User[]

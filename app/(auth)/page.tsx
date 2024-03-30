@@ -2,18 +2,18 @@
 import { loginFormSchema, loginFormSchemaType } from '../_components/Forms/login-form'
 import { registerFormSchema, registerFormSchemaType } from '../_components/Forms/register-form'
 import { Separator } from '@/shared/components/ui/separator'
-import RegisterForm from '../_components/RegisterForm'
+import RegisterForm from '../_components/UI/RegisterForm'
 import { Button } from '@/shared/components/ui/button'
 import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useCallback, useEffect, useState } from 'react'
-import LoginForm from '../_components/LoginForm'
+import LoginForm from '../_components/UI/LoginForm'
 import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form"
 import { FaGithub } from "react-icons/fa";
 import Image from 'next/image'
 import axios from "axios"
 import { z } from "zod"
-import { PromiseNotification } from '../_components/AxiosApiResNotification'
+import { PromiseNotification } from '../../shared/lib/AxiosApiResNotification'
 import { signIn, useSession } from "next-auth/react"
 import toast from 'react-hot-toast'
 import { useRouter } from "next13-progressbar"
@@ -70,7 +70,7 @@ const Home = () => {
             }).then((callBack) => {
                 if (callBack?.ok) {
                     loginForm.reset()
-                    router.push("/users")
+                    router.push("/conversations")
                     toast.success("Signed In Successfully!")
                 }
                 if (callBack?.error) {
@@ -89,7 +89,7 @@ const Home = () => {
             redirect: false
         }).then((callBack) => {
             if (callBack?.ok) {
-                router.push("/users")
+                router.push("/conversations")
                 toast.success("Signed In Successfully!")
             }
             if (callBack?.error) {
@@ -112,20 +112,20 @@ const Home = () => {
                 <div className="space-y-5">
                     {
                         variant === "LOGIN" ? (
-                            <LoginForm onSubmit={onSubmit} loginForm={loginForm} />
+                            <LoginForm onSubmit={onSubmit} loginForm={loginForm} makeItDisable={loading} />
                         ) : (
-                            <RegisterForm onSubmit={onSubmit} registerForm={registerForm} />
+                            <RegisterForm onSubmit={onSubmit} registerForm={registerForm} makeItDisable={loading} />
                         )
                     }
                     <Separator />
                     <div className="w-full flex flex-row space-x-2">
-                        <Button variant={"outline"} className="text-md space-x-3 w-1/2" onClick={() => socialAction("google")}>
+                        <Button variant={"outline"} className="text-md space-x-3 w-1/2" onClick={() => socialAction("google")} disabled={loading}>
                             <FcGoogle size={22} />
                             <span>
                                 Google
                             </span>
                         </Button>
-                        <Button variant={"outline"} className="text-md space-x-3 w-1/2" onClick={() => socialAction("github")}>
+                        <Button variant={"outline"} className="text-md space-x-3 w-1/2" onClick={() => socialAction("github")} disabled={loading}>
                             <FaGithub size={22} />
                             <span>
                                 Github

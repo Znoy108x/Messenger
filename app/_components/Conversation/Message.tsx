@@ -1,12 +1,12 @@
 "use client"
 import React from 'react'
-import AvatarComp from './AvatarComp'
+import AvatarComp from '../UI/AvatarComp'
 import { useSession } from 'next-auth/react'
 import { FullMessageType } from '@/shared/types/Conversation'
 import { cn } from '@/shared/lib/utils'
 import { format } from 'date-fns'
 import Image from 'next/image'
-import { UserSeenList } from './UsersSeenList'
+import { UserSeenList } from '../User/UsersSeenList'
 
 const Message = ({ data, isLast }: { data: FullMessageType, isLast: boolean }) => {
 

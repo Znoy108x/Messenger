@@ -2,7 +2,7 @@
 import { useSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next13-progressbar'
-import Loading from '../_components/Loading'
+import Loading from '../_components/UI/Loading'
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 

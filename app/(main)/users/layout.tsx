@@ -1,7 +1,7 @@
 import React from 'react'
-import SideBar from '../../_components/SideBar'
+import SideBar from '../../_components/UI/SideBar'
 import { getUsers } from '@/shared/actions/getUsers'
-import UserList from '../../_components/UserList'
+import UserList from '../../_components/User/UserList'
 
 const UsersLayout = async ({ children }: { children: React.ReactNode }) => {
 

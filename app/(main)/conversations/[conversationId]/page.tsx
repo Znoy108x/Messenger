@@ -1,6 +1,6 @@
-import ConversationBody from '@/app/_components/ConversationBody'
-import ConversationForm from '@/app/_components/ConversationForm'
-import ConversationsHeader from '@/app/_components/ConversationsHeader'
+import ConversationBody from '@/app/_components/Conversation/ConversationBody'
+import ConversationForm from '@/app/_components/Conversation/ConversationForm'
+import ConversationsHeader from '@/app/_components/Conversation/ConversationsHeader'
 import { getConversationByIdWithMessages } from '@/shared/actions/getConversationByIdWithMessages'
 import { FullConversationType } from '@/shared/types/Conversation'
 import React from 'react'
@@ -12,6 +12,7 @@ interface ConversationIdPageProps {
 const ConversationIdPage = async ({ params: { conversationId } }: ConversationIdPageProps) => {
 
     const conversationByIdWithMessages: FullConversationType | null = await getConversationByIdWithMessages(conversationId)
+
     if (!conversationByIdWithMessages) {
         return (
             <div className=" flex items-center justify-center">
