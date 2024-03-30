@@ -7,6 +7,7 @@ import { Users } from 'lucide-react'
 import { useRouter } from 'next13-progressbar'
 import React, { useState } from 'react'
 import ConversationItem from './ConversationItem'
+import CreateGroupDialog from './CreateGroupDialog'
 
 interface Props {
     conversations: FullConversationType[]
@@ -25,9 +26,7 @@ const ConversationList = ({ conversations }: Props) => {
                     <div className="text-2xl font-bold text-neutral-800">
                         Message
                     </div>
-                    <Button variant={"ghost"}>
-                        <Users />
-                    </Button>
+                    <CreateGroupDialog />
                 </div>
                 <div className="flex flex-col w-full ">
                     {

@@ -6,6 +6,7 @@ import { useOtherUser } from '@/shared/hooks/useOtherUser'
 import Link from 'next/link'
 import { ChevronLeft, EllipsisVertical } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
+import UserConversationAction from './UserConversationAction'
 
 interface ConversationHeaderProps {
     conversation: FullConversationType
@@ -39,9 +40,7 @@ const ConversationsHeader = ({
                     <span className="text-neutral-500 text-sm font-normal">{statusText}</span>
                 </div>
             </div>
-            <Button variant={"ghost"}>
-                <EllipsisVertical className='text-messangerBlue size-5' />
-            </Button>
+            <UserConversationAction conversation={conversation}/>
         </div>
     )
 }

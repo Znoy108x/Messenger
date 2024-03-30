@@ -56,7 +56,7 @@ export async function POST(
     });
     return NextResponse.json(updatedMessage);
   } catch (err) {
-    console.log("Conversationd-Seen");
+    console.log("Conversationd-Seen-err");
     return new NextResponse("Something went wrong!", { status: 501 });
   }
 }
