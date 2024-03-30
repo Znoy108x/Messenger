@@ -4,6 +4,10 @@ export const SuccessNotification = (message: string) => {
   toast.success(message);
 };
 
+export const ErrorNotification = (errMessage: string) => {
+  toast.error(errMessage);
+};
+
 export const PromiseNotification = (
   promiseReq: Promise<any>,
   completingMessage: string,

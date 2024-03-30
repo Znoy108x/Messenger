@@ -1,6 +1,6 @@
 import React from 'react'
-import { loginFormSchemaType } from './Forms/login-form'
-import { registerFormSchemaType } from './Forms/register-form'
+import { loginFormSchemaType } from '../Forms/login-form'
+import { registerFormSchemaType } from '../Forms/register-form'
 import { z } from 'zod'
 import { UseFormReturn } from 'react-hook-form'
 import { Button } from "@/shared/components/ui/button"

@@ -15,7 +15,7 @@ import {
     PopoverTrigger,
 } from "@/shared/components/ui/popover"
 import { User } from "@prisma/client"
-import AvatarComp from "./AvatarComp"
+import AvatarComp from "../UI/AvatarComp"
 
 interface Props {
     seenUsersList: User[]

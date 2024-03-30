@@ -9,10 +9,10 @@ import {
 import { Button } from '@/shared/components/ui/button'
 import { EllipsisVertical } from 'lucide-react'
 import { FullConversationType } from '@/shared/types/Conversation'
-import AvatarComp from './AvatarComp'
+import AvatarComp from '../UI/AvatarComp'
 import { useOtherUser } from '@/shared/hooks/useOtherUser'
 import { format } from 'date-fns'
-import DeleteConversationDialog from './DeleteConversationDialog'
+import DeleteConversationDialog from '../Dialogs/DeleteConversationDialog'
 
 const UserConversationAction = ({ conversation }: { conversation: FullConversationType }) => {
 

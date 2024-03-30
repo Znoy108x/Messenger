@@ -1,5 +1,5 @@
 import React from 'react'
-import EmptyState from '../../_components/EmptyState'
+import EmptyState from '../../_components/UI/EmptyState'
 
 const UsersPage = () => {
     return (

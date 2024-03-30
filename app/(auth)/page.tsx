@@ -2,18 +2,18 @@
 import { loginFormSchema, loginFormSchemaType } from '../_components/Forms/login-form'
 import { registerFormSchema, registerFormSchemaType } from '../_components/Forms/register-form'
 import { Separator } from '@/shared/components/ui/separator'
-import RegisterForm from '../_components/RegisterForm'
+import RegisterForm from '../_components/UI/RegisterForm'
 import { Button } from '@/shared/components/ui/button'
 import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useCallback, useEffect, useState } from 'react'
-import LoginForm from '../_components/LoginForm'
+import LoginForm from '../_components/UI/LoginForm'
 import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form"
 import { FaGithub } from "react-icons/fa";
 import Image from 'next/image'
 import axios from "axios"
 import { z } from "zod"
-import { PromiseNotification } from '../_components/AxiosApiResNotification'
+import { PromiseNotification } from '../../shared/lib/AxiosApiResNotification'
 import { signIn, useSession } from "next-auth/react"
 import toast from 'react-hot-toast'
 import { useRouter } from "next13-progressbar"

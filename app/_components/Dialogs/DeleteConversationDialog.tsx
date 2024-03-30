@@ -14,7 +14,7 @@ import {
 import { Button } from '@/shared/components/ui/button'
 import { useConversation } from '@/shared/hooks/useConversation'
 import axios from "axios"
-import { PromiseNotification } from './AxiosApiResNotification'
+import { PromiseNotification } from '../../../shared/lib/AxiosApiResNotification'
 import { useRouter } from 'next13-progressbar'
 
 const DeleteConversationDialog = () => {

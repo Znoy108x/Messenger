@@ -1,7 +1,7 @@
 import { Button } from '@/shared/components/ui/button'
 import { FullConversationType, FullMessageType } from '@/shared/types/Conversation'
 import React, { useCallback, useMemo } from 'react'
-import AvatarComp from './AvatarComp'
+import AvatarComp from '../UI/AvatarComp'
 import { useRouter } from 'next13-progressbar'
 import { format } from "date-fns"
 import { useOtherUser } from '@/shared/hooks/useOtherUser'

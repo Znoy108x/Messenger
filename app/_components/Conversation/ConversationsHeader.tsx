@@ -1,12 +1,12 @@
 "use client"
 import React, { useMemo } from 'react'
-import AvatarComp from './AvatarComp'
+import AvatarComp from '../UI/AvatarComp'
 import { FullConversationType } from '@/shared/types/Conversation'
 import { useOtherUser } from '@/shared/hooks/useOtherUser'
 import Link from 'next/link'
 import { ChevronLeft, EllipsisVertical } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
-import UserConversationAction from './UserConversationAction'
+import UserConversationAction from '../User/UserConversationAction'
 
 interface ConversationHeaderProps {
     conversation: FullConversationType
@@ -40,7 +40,7 @@ const ConversationsHeader = ({
                     <span className="text-neutral-500 text-sm font-normal">{statusText}</span>
                 </div>
             </div>
-            <UserConversationAction conversation={conversation}/>
+            <UserConversationAction conversation={conversation} />
         </div>
     )
 }

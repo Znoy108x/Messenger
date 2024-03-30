@@ -7,7 +7,7 @@ import { Users } from 'lucide-react'
 import { useRouter } from 'next13-progressbar'
 import React, { useState } from 'react'
 import ConversationItem from './ConversationItem'
-import CreateGroupDialog from './CreateGroupDialog'
+import CreateGroupDialog from '../Dialogs/CreateGroupDialog'
 
 interface Props {
     conversations: FullConversationType[]

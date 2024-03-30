@@ -1,5 +1,5 @@
-import ConversationList from '@/app/_components/ConversationList'
-import SideBar from '@/app/_components/SideBar'
+import ConversationList from '@/app/_components/Conversation/ConversationList'
+import SideBar from '@/app/_components/UI/SideBar'
 import { getConversations } from '@/shared/actions/getConversations'
 import { FullConversationType } from '@/shared/types/Conversation'
 import React from 'react'

@@ -3,7 +3,7 @@ import { FullConversationType } from '@/shared/types/Conversation'
 import React, { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { chatInputFormSchema, chatInputFormSchemaType, chatInputFormSchemaValidation } from './Forms/chat-input-form'
+import { chatInputFormSchema, chatInputFormSchemaType, chatInputFormSchemaValidation } from '../Forms/chat-input-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
     Form,

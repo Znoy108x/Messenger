@@ -1,11 +1,11 @@
 "use client"
 import { User } from '@prisma/client'
 import React, { useCallback, useState } from 'react'
-import AvatarComp from './AvatarComp'
+import AvatarComp from '../UI/AvatarComp'
 import axios from "axios"
 import { useRouter } from 'next13-progressbar'
 import { Button } from '@/shared/components/ui/button'
-import { PromiseNotification } from './AxiosApiResNotification'
+import { PromiseNotification } from '../../../shared/lib/AxiosApiResNotification'
 
 const UserItem = ({ user }: { user: User }) => {
 
