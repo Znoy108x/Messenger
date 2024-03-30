@@ -14,9 +14,9 @@ interface Props {
 
 const ConversationList = ({ conversations }: Props) => {
 
-    const [allConversations, setAllConversations] = useState(conversations)
-    const { conversationId, isOpen } = useConversation()
     const router = useRouter()
+    const { conversationId, isOpen } = useConversation()
+    const [allConversations, setAllConversations] = useState(conversations)
 
     return (
         <aside className={cn("px-5 pb-20 lg:pb-0 lg:w-[430px] lg:block overflow-y-auto border-r border-gray-200 block w-full", isOpen ? "hidden" : "block")}>

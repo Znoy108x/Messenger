@@ -6,7 +6,7 @@ import React from 'react'
 
 const ConversationLayout = async ({ children }: { children: React.ReactNode }) => {
 
-    const conversations : FullConversationType[] = await getConversations()
+    const conversations: FullConversationType[] = await getConversations()
 
     return (
         <SideBar>

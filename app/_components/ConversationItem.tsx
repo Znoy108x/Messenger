@@ -16,6 +16,8 @@ interface Props {
 
 const ConversationItem = ({ data, selected }: Props) => {
 
+    console.log(data)
+
     const router = useRouter()
     const session = useSession()
     const otherUserData = useOtherUser(data)
@@ -42,7 +44,7 @@ const ConversationItem = ({ data, selected }: Props) => {
         if (!currentUserEmail) {
             return false;
         }
-        return (seenArray.filter((seenUser) => seenUser.id === currentUserEmail)).length !== 0
+        return (seenArray.filter((seenUser) => seenUser.email === currentUserEmail)).length !== 0
     }, [currentUserEmail, lastMessage])
 
     const lastMessageText = useMemo(() => {
@@ -57,6 +59,12 @@ const ConversationItem = ({ data, selected }: Props) => {
         }
     }, [lastMessage])
 
+    console.log({
+        lastMessage ,
+        lastMessageText,
+        hasSeen
+    })
+
 
     return (
         <div className="flex items-center space-x-3  hover:bg-gray-100 transition-all duration-300 p-2 cursor-pointer rounded-xl border-[1px] hover:border-gray-200 border-transparent" onClick={handleClick}>
@@ -64,7 +72,7 @@ const ConversationItem = ({ data, selected }: Props) => {
                 <AvatarComp user={otherUserData} />
                 <div className="flex flex-col">
                     <span className="text-md font-bold text-neutral-950 caption-top">{otherUserData.name}</span>
-                    <span className={cn("text-[13px] font-normal text-gray-700 w-[94%]  truncate", lastMessageText && "text-blue-800 font-medium animate-pulse")}>{lastMessageText}</span>
+                    <span className={cn("text-[13px] font-normal text-gray-700 w-[94%]  truncate", !hasSeen && "text-blue-800 font-medium animate-pulse")}>{lastMessageText}</span>
                 </div>
             </div>
         </div>
