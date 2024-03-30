@@ -1,6 +1,8 @@
 import { getCurrentUser } from "@/shared/actions/getCurrentUser";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/shared/lib/prismadb";
+import { pusherServer } from "@/shared/lib/pusher";
+import { update } from "lodash";
 
 interface ParamsType {
   conversationId: string;
@@ -54,6 +56,15 @@ export async function POST(
         },
       },
     });
+    await pusherServer.trigger(currentUser.email!, "conversation:update", {
+      id: conversationId,
+      messages: [updatedMessage],
+    });
+    await pusherServer.trigger(
+      conversationId!,
+      "message:update",
+      updatedMessage
+    );
     return NextResponse.json(updatedMessage);
   } catch (err) {
     console.log("Conversationd-Seen-err");

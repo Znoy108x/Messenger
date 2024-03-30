@@ -20,10 +20,11 @@ interface LoginFormProps {
     loginForm: UseFormReturn<{
         email: string;
         password: string;
-    }, any, undefined>
+    }, any, undefined>,
+    makeItDisable: boolean
 }
 
-const LoginForm = ({ loginForm, onSubmit }: LoginFormProps) => {
+const LoginForm = ({ loginForm, onSubmit, makeItDisable }: LoginFormProps) => {
     return (
         <Form {...loginForm}>
             <form onSubmit={loginForm.handleSubmit(onSubmit)} className="space-y-6">
@@ -53,7 +54,7 @@ const LoginForm = ({ loginForm, onSubmit }: LoginFormProps) => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className='w-full bg-messangerBlue hover:bg-sky-700' disabled={loginForm.formState.isSubmitting}>
+                <Button type="submit" className='w-full bg-messangerBlue hover:bg-sky-700' disabled={loginForm.formState.isSubmitting || makeItDisable}>
                     Sign In
                 </Button>
             </form>

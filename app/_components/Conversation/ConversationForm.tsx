@@ -33,13 +33,17 @@ const ConversationForm = ({ conversation }: { conversation: FullConversationType
     })
 
     async function onSubmit(values: z.infer<chatInputFormSchemaType>) {
-        await axios.post("/api/messages", { ...values, conversationId: conversation.id })
         chatInputForm.reset()
+        try {
+            await axios.post("/api/messages", { ...values, conversationId: conversation.id })
+        } catch (err) {
+            console.log("User-Input-Send", err)
+        }
     }
 
     const handleImageUpload = async (result: any) => {
         const imageUrl = result?.info?.secure_url
-        axios.post("/api/messages", {
+        await axios.post("/api/messages", {
             image: imageUrl,
             conversationId: conversation.id
         })
@@ -58,14 +62,14 @@ const ConversationForm = ({ conversation }: { conversation: FullConversationType
     if (!render) return null
 
     return (
-        <div className="w-full  bg-white py-4 pl-3 gap-x-4 flex items-center">
+        <div className="w-full  bg-white py-4 pl-3 gap-x-4 flex items-start">
             <CldUploadButton options={{ maxFiles: 1 }} uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME!} onSuccess={handleImageUpload}>
                 <Button variant={"ghost"} className='bg-messangerBlue hover:bg-messangerBlue'>
                     <ImageUp className="size-7 text-white" />
                 </Button>
             </CldUploadButton>
             <Form {...chatInputForm}>
-                <form onSubmit={chatInputForm.handleSubmit(onSubmit)} className='flex-1 flex items-center gap-x-4 pr-4'>
+                <form onSubmit={chatInputForm.handleSubmit(onSubmit)} className='flex-1 flex items-start gap-x-4 pr-4'>
                     <FormField
                         control={chatInputForm.control}
                         name="body"

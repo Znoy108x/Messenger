@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { ChevronLeft, EllipsisVertical } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import UserConversationAction from '../User/UserConversationAction'
+import AvatarGroup from '../UI/AvatarGroup'
 
 interface ConversationHeaderProps {
     conversation: FullConversationType
@@ -33,7 +34,13 @@ const ConversationsHeader = ({
                             <ChevronLeft className='text-messangerBlue size-7' />
                         </Link>
                     </Button>
-                    <AvatarComp user={otherUserDetails} />
+                    {
+                        conversation.isGroup ? (
+                            <AvatarGroup data={conversation} />
+                        ) : (
+                            <AvatarComp user={otherUserDetails} />
+                        )
+                    }
                 </div>
                 <div className="flex flex-col">
                     <span className="font-bold text-xl text-neutral-900 capitalize">{conversation.name || otherUserDetails.name}</span>

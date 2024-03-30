@@ -1,14 +1,12 @@
 import { getCurrentUser } from "@/shared/actions/getCurrentUser";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/shared/lib/prismadb";
+import { pusherServer } from "@/shared/lib/pusher";
 
 export async function POST(req: NextRequest) {
   try {
     const currentUser = await getCurrentUser();
     const { userId, isGroup, members, name } = await req.json();
-    if (!userId) {
-      return new NextResponse("UserId is missing", { status: 400 });
-    }
     if (!currentUser?.id || !currentUser?.email) {
       return new NextResponse("Unauthorized user", { status: 400 });
     }
@@ -37,6 +35,17 @@ export async function POST(req: NextRequest) {
           users: true,
         },
       });
+
+      newGroupConversation.users.map((user) => {
+        if (user.email) {
+          pusherServer.trigger(
+            user.email,
+            "conversation:new",
+            newGroupConversation
+          );
+        }
+      });
+
       return NextResponse.json(newGroupConversation);
     }
     const isPeerToPeerConversationsPresent = await prisma.conversation.findMany(
@@ -76,6 +85,11 @@ export async function POST(req: NextRequest) {
       include: {
         users: true,
       },
+    });
+    newConversation.users.map((user) => {
+      if (user.email) {
+        pusherServer.trigger(user.email, "conversation:new", newConversation);
+      }
     });
     return NextResponse.json(newConversation);
   } catch (err) {

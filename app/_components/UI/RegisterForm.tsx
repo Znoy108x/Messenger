@@ -20,10 +20,11 @@ interface RegisterFormProps {
         name: string;
         email: string;
         password: string;
-    }, any, undefined>
+    }, any, undefined>,
+    makeItDisable: boolean
 }
 
-const RegisterForm = ({ registerForm, onSubmit }: RegisterFormProps) => {
+const RegisterForm = ({ registerForm, onSubmit, makeItDisable }: RegisterFormProps) => {
     return (
         <Form {...registerForm}>
             <form onSubmit={registerForm.handleSubmit(onSubmit)} className="space-y-6">
@@ -66,7 +67,7 @@ const RegisterForm = ({ registerForm, onSubmit }: RegisterFormProps) => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className='w-full bg-messangerBlue hover:bg-sky-700' disabled={registerForm.formState.isSubmitting}>
+                <Button type="submit" className='w-full bg-messangerBlue hover:bg-sky-700' disabled={registerForm.formState.isSubmitting || makeItDisable}>
                     Sign Up
                 </Button>
             </form>

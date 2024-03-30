@@ -4,7 +4,6 @@ import { VenetianMask } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import {
     Command,
-    CommandEmpty,
     CommandGroup,
     CommandInput,
     CommandItem,

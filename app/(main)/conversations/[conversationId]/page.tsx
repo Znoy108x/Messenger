@@ -12,6 +12,7 @@ interface ConversationIdPageProps {
 const ConversationIdPage = async ({ params: { conversationId } }: ConversationIdPageProps) => {
 
     const conversationByIdWithMessages: FullConversationType | null = await getConversationByIdWithMessages(conversationId)
+
     if (!conversationByIdWithMessages) {
         return (
             <div className=" flex items-center justify-center">
