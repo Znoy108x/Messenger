@@ -16,8 +16,6 @@ interface Props {
 
 const ConversationItem = ({ data, selected }: Props) => {
 
-    console.log(data)
-
     const router = useRouter()
     const session = useSession()
     const otherUserData = useOtherUser(data)
@@ -58,13 +56,6 @@ const ConversationItem = ({ data, selected }: Props) => {
             return lastMessage.body
         }
     }, [lastMessage])
-
-    console.log({
-        lastMessage ,
-        lastMessageText,
-        hasSeen
-    })
-
 
     return (
         <div className="flex items-center space-x-3  hover:bg-gray-100 transition-all duration-300 p-2 cursor-pointer rounded-xl border-[1px] hover:border-gray-200 border-transparent" onClick={handleClick}>

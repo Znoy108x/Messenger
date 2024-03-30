@@ -6,12 +6,19 @@ import { FullMessageType } from '@/shared/types/Conversation'
 import { cn } from '@/shared/lib/utils'
 import { format } from 'date-fns'
 import Image from 'next/image'
+import { UserSeenList } from './UsersSeenList'
 
 const Message = ({ data, isLast }: { data: FullMessageType, isLast: boolean }) => {
 
     const session = useSession()
     const isOwn = session?.data?.user?.email === data?.sender?.email
-    const seenBy = ((data.seenBy || []).filter(user => user.email !== data?.sender?.email)).join(", ")
+    const otherUserSeenList = (data.seenBy || []).filter(user => user.email !== data.sender.email)
+    console.log({
+        isOwn,
+        otherUserSeenList,
+        user: session?.data?.user,
+        data: data
+    })
 
     return (
         <div className={cn("p-4 w-full flex items-center", isOwn ? "justify-end" : "justify-start")}>
@@ -33,6 +40,9 @@ const Message = ({ data, isLast }: { data: FullMessageType, isLast: boolean }) =
                                 <Image src={data.image} alt="Message Image" height={100} width={100} className='w-[300px] h-[300px] object-cover rounded-2xl' />
                             </div>
                         )
+                    }
+                    {
+                        isOwn && <UserSeenList seenUsersList={otherUserSeenList} />
                     }
                 </div>
             </div>
