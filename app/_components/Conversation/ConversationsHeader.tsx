@@ -26,7 +26,7 @@ const ConversationsHeader = ({
     }, [conversation])
 
     return (
-        <div className="px-2 py-2 border-b-[1px] shadow-sm border-gray-100 flex items-center justify-between">
+        <div className="h-[6%] px-2 py-2 border-b-[1px] shadow-sm border-gray-100 flex items-center justify-between">
             <div className="flex gap-x-8 items-center">
                 <div className="flex items-center">
                     <Button variant={"ghost"}>

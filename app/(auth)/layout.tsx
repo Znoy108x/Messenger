@@ -12,7 +12,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         if (session.status === "authenticated") {
-            router.push("/users")
+            router.push("/conversations")
         } else if (session.status === "unauthenticated") {
             setChecking(false)
         }

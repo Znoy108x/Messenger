@@ -9,13 +9,14 @@ interface AvatarProps {
 const AvatarComp: React.FC<AvatarProps> = ({ user }) => {
 
     return (
-        <div className="shrink-0 relative overflow-hidden size-10 md:size-12 rounded-xl">
-            <Image
-                fill
-                src={user?.image || '/placeholder.jpg'}
-                alt="Avatar"
-                className="object-cover"
-            />
+        <div className="relative shrink-0">
+            <div className="relative shrink-0 inline-block overflow-hidden h-9 w-9 md:size-12 rounded-xl">
+                <Image
+                    fill
+                    src={user?.image || '/placeholder.jpg'}
+                    alt="Avatar"
+                />
+            </div>
         </div>
     );
 }

@@ -14,11 +14,11 @@ const AvatarGroup = ({ data }: { data: FullConversationType }) => {
     }
 
     return (
-        <div className="h-11 w-11">
+        <div className="size-11 shrink-0">
             {slicedUsers.map((user, index) => (
                 <div
                     key={user.id}
-                    className={` absolute inline-block  rounded-full  overflow-hidden h-[21px] w-[21px] ${positionMap[index as keyof typeof positionMap]}`}>
+                    className={`shrink-0 absolute inline-block  rounded-full  overflow-hidden h-[21px] w-[21px] ${positionMap[index as keyof typeof positionMap]}`}>
                     <Image fill src={user?.image || '/placeholder.jpg'} alt="Avatar" />
                 </div>
             ))}

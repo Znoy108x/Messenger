@@ -1,12 +1,13 @@
+"use client"
 import React from 'react'
 import DeskTopSidebar from './DeskTopSidebar'
 import MobileFooter from './MobileFooter'
-import { getCurrentUser } from '@/shared/actions/getCurrentUser'
 import { redirect } from 'next/navigation'
+import { useUserContext } from '@/shared/context/UserContext'
 
-const SideBar = async ({ children }: { children: React.ReactNode }) => {
+const SideBar = ({ children }: { children: React.ReactNode }) => {
 
-    const currentUser = await getCurrentUser()
+    const { currentUser } = useUserContext()
 
     if (!currentUser) {
         redirect("/")

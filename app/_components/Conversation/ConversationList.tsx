@@ -57,7 +57,7 @@ const ConversationList = ({ conversations, users }: Props) => {
 
         const conversationDeleteHandler = (deleteConversation: FullConversationType) => {
             setAllConversations(current => { return [...current.filter(conv => conv.id !== deleteConversation.id)] })
-            if(conversationId === deleteConversation.id){
+            if (conversationId === deleteConversation.id) {
                 router.push("/conversations")
             }
         }
@@ -73,7 +73,7 @@ const ConversationList = ({ conversations, users }: Props) => {
             pusherClient.unbind("conversation:update", conversationUpdateHandler)
             pusherClient.unbind("conversation:remove", conversationDeleteHandler)
         }
-    }, [pusherKey])
+    }, [pusherKey, router, conversationId])
 
     return (
         <aside className={cn("px-5 pb-20 lg:pb-0 lg:w-[430px] lg:block overflow-y-auto border-r border-gray-200 block w-full", isOpen ? "hidden" : "block")}>
@@ -84,7 +84,7 @@ const ConversationList = ({ conversations, users }: Props) => {
                     </div>
                     <CreateGroupDialog users={users} />
                 </div>
-                <div className="flex flex-col w-full ">
+                <div className="flex flex-col w-full space-y-2">
                     {
                         allConversations.map((conversation: FullConversationType) => (
                             <ConversationItem key={conversation.id} data={conversation} selected={conversationId === conversation.id} />
