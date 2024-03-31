@@ -1,7 +1,7 @@
 import React from 'react'
 import SideBar from '../../_components/UI/SideBar'
 import { getUsers } from '@/shared/actions/getUsers'
-import UserList from '../../_components/User/UserList'
+import UsersComponent from '@/app/_components/User/UsersComponent'
 
 const UsersLayout = async ({ children }: { children: React.ReactNode }) => {
 
@@ -9,10 +9,9 @@ const UsersLayout = async ({ children }: { children: React.ReactNode }) => {
 
     return (
         <SideBar>
-            <div className="h-full flex">
-                <UserList users={users} />
+            <UsersComponent users={users}>
                 {children}
-            </div>
+            </UsersComponent>
         </SideBar>
     )
 }

@@ -28,7 +28,6 @@ const Message = ({ data, isLast }: { data: FullMessageType, isLast: boolean }) =
                     <span className="text-xs font-medium text-neutral-600">
                         {format(new Date(data.createdAt), 'p')}
                     </span>
-
                     {data.body && (
                         <div className={cn('rounded-3xl px-7 py-2', isOwn ? "bg-messangerBlue text-white" : "bg-white")}>
                             {data.body}
@@ -46,7 +45,7 @@ const Message = ({ data, isLast }: { data: FullMessageType, isLast: boolean }) =
                     }
                 </div>
             </div>
-        </div >
+        </div>
     )
 }
 

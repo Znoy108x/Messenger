@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/shared/lib/prismadb";
 import { pusherServer } from "@/shared/lib/pusher";
 import { update } from "lodash";
+import { FullMessageType } from "@/shared/types/Conversation";
 
 interface ParamsType {
   conversationId: string;
@@ -35,37 +36,62 @@ export async function POST(
     if (!conversationWithMessageAndUser) {
       return new NextResponse("Invalid conversation id", { status: 400 });
     }
-    const totalMessages = conversationWithMessageAndUser.messages.length - 1;
-    const lastMessage = conversationWithMessageAndUser.messages[totalMessages];
-    if (!lastMessage) {
-      return NextResponse.json(conversationWithMessageAndUser);
-    }
-    const updatedMessage = await prisma.message.update({
-      where: {
-        id: lastMessage.id,
-      },
-      include: {
-        seenBy: true,
-        sender: true,
-      },
-      data: {
-        seenBy: {
-          connect: {
-            id: currentUser.id,
+
+    const totalMessages = conversationWithMessageAndUser.messages.length;
+    const lastMessageIndex = conversationWithMessageAndUser.messages.length - 1;
+
+    conversationWithMessageAndUser.messages.map(async (message, index) => {
+      const seenByArr = message.seenIds;
+      const isPresent = seenByArr.find((id) => id === currentUser.id);
+      let updatedMessage: FullMessageType = {} as FullMessageType;
+      if (!isPresent && index !== lastMessageIndex) {
+        updatedMessage = await prisma.message.update({
+          where: {
+            id: message.id,
           },
-        },
-      },
+          include: {
+            seenBy: true,
+            sender: true,
+          },
+          data: {
+            seenBy: {
+              connect: {
+                id: currentUser.id,
+              },
+            },
+          },
+        });
+      } else if (!isPresent && index === lastMessageIndex) {
+        updatedMessage = await prisma.message.update({
+          where: {
+            id: message.id,
+          },
+          include: {
+            seenBy: true,
+            sender: true,
+          },
+          data: {
+            seenBy: {
+              connect: {
+                id: currentUser.id,
+              },
+            },
+          },
+        });
+      }
+      await pusherServer.trigger(currentUser.email!, "conversation:update", {
+        id: conversationId,
+        messages: [updatedMessage],
+      });
+      if (index === totalMessages) {
+        await pusherServer.trigger(
+          conversationId!,
+          "message:update",
+          updatedMessage
+        );
+      }
     });
-    await pusherServer.trigger(currentUser.email!, "conversation:update", {
-      id: conversationId,
-      messages: [updatedMessage],
-    });
-    await pusherServer.trigger(
-      conversationId!,
-      "message:update",
-      updatedMessage
-    );
-    return NextResponse.json(updatedMessage);
+    return NextResponse.json({ success: true });
   } catch (err) {
     console.log("Conversationd-Seen-err");
     return new NextResponse("Something went wrong!", { status: 501 });

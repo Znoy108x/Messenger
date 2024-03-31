@@ -46,7 +46,13 @@ export async function DELETE(
     });
 
     conversation.users.map((user) => {
-      pusherServer.trigger(user.email!, "conversation:remove", conversation);
+      pusherServer.trigger(user.email!, "conversation:remove", {
+        conversation,
+        deletedBy: {
+          id: currentUser.id,
+          name: currentUser.name,
+        },
+      });
     });
 
     return NextResponse.json(deletedConversation);

@@ -1,10 +1,10 @@
 "use client"
-import { useCallback, useEffect, useRef, useState } from "react"
+import axios from "axios"
 import ConversationBody from "./ConversationBody"
 import ConversationForm from "./ConversationForm"
-import { FullConversationType, FullMessageType } from "@/shared/types/Conversation"
 import { pusherClient } from "@/shared/lib/pusher"
-import axios from "axios"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { FullConversationType, FullMessageType } from "@/shared/types/Conversation"
 
 export const ConversationBodyAndInputForm = ({ conversationByIdWithMessages }: { conversationByIdWithMessages: FullConversationType }) => {
 
@@ -29,6 +29,7 @@ export const ConversationBodyAndInputForm = ({ conversationByIdWithMessages }: {
     }, []);
 
     useEffect(() => {
+
         pusherClient.subscribe(conversationId)
 
         const newMessageHandler = (message: FullMessageType) => {
@@ -44,12 +45,19 @@ export const ConversationBodyAndInputForm = ({ conversationByIdWithMessages }: {
         }
 
         const messageUpdateHandler = (newMessage: FullMessageType) => {
-            setMessages((current) => current.map(currMess => {
-                if (currMess.id === newMessage.id) {
-                    return newMessage
-                }
-                return currMess
-            }))
+            const messageIndex = messages.findIndex(ele => ele.id === newMessage.id)
+            if (!messageIndex) {
+                setMessages((current) => current.map(currMess => {
+                    if (currMess.id === newMessage.id) {
+                        return newMessage
+                    }
+                    return currMess
+                }))
+            } else {
+                let oldMessages = messages
+                oldMessages[messageIndex] = newMessage
+                setMessages([...oldMessages])
+            }
         }
 
         pusherClient.bind("messages:new", newMessageHandler)

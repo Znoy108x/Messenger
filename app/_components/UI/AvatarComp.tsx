@@ -15,6 +15,7 @@ const AvatarComp: React.FC<AvatarProps> = ({ user }) => {
                     fill
                     src={user?.image || '/placeholder.jpg'}
                     alt="Avatar"
+                    className="object-cover"
                 />
             </div>
         </div>

@@ -1,18 +1,20 @@
 "use client"
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next13-progressbar'
 import Loading from '../_components/UI/Loading'
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
-    const [checking, setChecking] = useState(true)
-    const session = useSession()
     const router = useRouter()
+    const session = useSession()
+    const [checking, setChecking] = useState(true)
+
 
     useEffect(() => {
         if (session.status === "authenticated") {
             router.push("/conversations")
+            router.refresh()
         } else if (session.status === "unauthenticated") {
             setChecking(false)
         }

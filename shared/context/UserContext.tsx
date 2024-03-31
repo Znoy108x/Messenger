@@ -6,14 +6,15 @@ import { Loader } from "lucide-react"
 import { useRouter } from "next13-progressbar"
 
 type UserContextType = {
-    currentUser: User
+    currentUser: User,
+    handleUserUpdate: (user: User) => void
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
 export const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
 
-    const [currentUser, setCurrentUser] = useState<User>()
+    const [currentUser, setCurrentUser] = useState<User>({} as User)
     const [loading, setLoading] = useState(true)
     const router = useRouter()
 
@@ -24,6 +25,13 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
         }
         setCurrentUser({ ...currentUser })
         setLoading(false)
+    }
+
+    const handleUserUpdate = (user: User) => {
+        console.log({ "newUpdatedUser": user })
+        setCurrentUser((currentUser) => {
+            return { ...currentUser, image: user.image }
+        })
     }
 
     useEffect(() => {
@@ -39,7 +47,8 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
     }
 
     const value: UserContextType = {
-        currentUser : currentUser as User
+        currentUser: currentUser as User,
+        handleUserUpdate
     }
 
     return (

@@ -27,7 +27,6 @@ const DeleteConversationDialog = () => {
     const onSuccessDelete = () => {
         setIsDeleting(false)
         router.push("/conversations")
-        router.refresh()
     }
 
     const handleDeleteConversation = async () => {

@@ -1,6 +1,6 @@
 "use client"
 import { FullConversationType, FullMessageType } from '@/shared/types/Conversation'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { chatInputFormSchema, chatInputFormSchemaType, chatInputFormSchemaValidation } from '../Forms/chat-input-form'
@@ -19,6 +19,11 @@ import { ImageUp, SendHorizontal } from 'lucide-react'
 import { CldUploadButton } from "next-cloudinary"
 import { useRouter } from 'next13-progressbar'
 import { cn } from '@/shared/lib/utils'
+import { useConversation } from '@/shared/hooks/useConversation'
+import { pusherServer } from '@/shared/lib/pusher'
+import { useUserContext } from '@/shared/context/UserContext'
+import { User } from '@prisma/client'
+import { setUserTyping } from '@/shared/actions/setUserTyping'
 
 const ConversationForm = ({ conversation, setMessageInState }: { conversation: FullConversationType, setMessageInState: (newMessage: FullMessageType) => void }) => {
 
@@ -26,6 +31,8 @@ const ConversationForm = ({ conversation, setMessageInState }: { conversation: F
     const [errMsg, setErrMsg] = useState("")
     const [render, setRender] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null);
+    const { conversationId } = useConversation()
+    const { currentUser } = useUserContext()
 
     const chatInputFormDefaultValue = {
         body: "",
@@ -39,6 +46,9 @@ const ConversationForm = ({ conversation, setMessageInState }: { conversation: F
     const formBodyValue = chatInputForm.watch("body")
 
     async function onSubmit(values: z.infer<chatInputFormSchemaType>) {
+        if (inputRef.current) {
+            inputRef.current.blur()
+        }
         if (values.body) {
             setErrMsg("")
             chatInputForm.reset()
@@ -56,6 +66,7 @@ const ConversationForm = ({ conversation, setMessageInState }: { conversation: F
 
     const handleImageUpload = async (result: any) => {
         const imageUrl = result?.info?.secure_url
+        setUserTyping(currentUser, conversationId, formBodyValue, false)
         await axios.post("/api/messages", {
             image: imageUrl,
             conversationId: conversation.id
@@ -69,12 +80,6 @@ const ConversationForm = ({ conversation, setMessageInState }: { conversation: F
     useEffect(() => {
         setRender(true)
     }, [])
-
-    useEffect(() => {
-        if (inputRef && inputRef.current) {
-            inputRef?.current.focus();
-        }
-    }, [inputRef]);
 
     if (!render) return null
 
@@ -93,7 +98,11 @@ const ConversationForm = ({ conversation, setMessageInState }: { conversation: F
                         render={({ field }) => (
                             <FormItem className='grow'>
                                 <FormControl>
-                                    <Input placeholder={errMsg || "Send message!"}   {...field} className={cn('flex-1 ', errMsg ? "focus-visible:ring-red-600 placeholder:text-red-600" : "focus-visible:ring-messangerBlue")} ref={inputRef} />
+                                    <Input placeholder={errMsg || "Send message!"}   {...field} onFocus={() => {
+                                        setUserTyping(currentUser, conversationId, formBodyValue, true)
+                                    }} onBlur={() => {
+                                        setUserTyping(currentUser, conversationId, formBodyValue, false)
+                                    }} className={cn('flex-1 ', errMsg ? "focus-visible:ring-red-600 placeholder:text-red-600" : "focus-visible:ring-messangerBlue")} ref={inputRef} />
                                 </FormControl>
                             </FormItem>
                         )}
