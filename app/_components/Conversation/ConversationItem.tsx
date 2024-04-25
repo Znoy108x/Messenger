@@ -1,29 +1,28 @@
-import { Button } from '@/shared/components/ui/button'
 import { FullConversationType, FullMessageType } from '@/shared/types/Conversation'
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import AvatarComp from '../UI/AvatarComp'
 import { useRouter } from 'next13-progressbar'
-import { format } from "date-fns"
 import { useOtherUser } from '@/shared/hooks/useOtherUser'
 import { useSession } from 'next-auth/react'
-import Email from 'next-auth/providers/email'
 import { cn } from '@/shared/lib/utils'
 import AvatarGroup from '../UI/AvatarGroup'
+import { pusherClient } from '@/shared/lib/pusher'
 
 interface Props {
     data: FullConversationType,
     selected?: boolean
 }
 
-const ConversationItem = ({ data, selected }: Props) => {
+const ConversationItem = ({ data }: Props) => {
 
     const router = useRouter()
     const session = useSession()
     const otherUserData = useOtherUser(data)
+    const [lastMessageSeen, setLastMessageSeen] = useState(false)
 
-    const handleClick = useCallback(() => {
-        router.push(`/conversations/${data.id}`)
-    }, [router, data])
+    const pusherKey = useMemo(() => {
+        return session?.data?.user?.email
+    }, [session?.data?.user?.email])
 
     const lastMessage: FullMessageType | "" = useMemo(() => {
         const messages = data.messages || []
@@ -35,7 +34,6 @@ const ConversationItem = ({ data, selected }: Props) => {
     }, [session])
 
     const hasSeen = useMemo(() => {
-        // no message sent by anyone
         if (!lastMessage) {
             return false;
         }
@@ -43,8 +41,15 @@ const ConversationItem = ({ data, selected }: Props) => {
         if (!currentUserEmail) {
             return false;
         }
-        return (seenArray.filter((seenUser) => seenUser.email === currentUserEmail)).length !== 0
+        const val = (seenArray.filter((seenUser) => seenUser.email === currentUserEmail)).length !== 0
+        setLastMessageSeen(val)
     }, [currentUserEmail, lastMessage])
+
+
+    const handleClick = useCallback(() => {
+        router.push(`/conversations/${data.id}`)
+    }, [router, data])
+
 
     const lastMessageText = useMemo(() => {
         if (!lastMessage) {
@@ -58,9 +63,28 @@ const ConversationItem = ({ data, selected }: Props) => {
         }
     }, [lastMessage])
 
+    const messagesLength = data?.messages?.length || 0
+    const isNewConversation = messagesLength === 0
+    const lastMessageSenderName = messagesLength > 0 ? data.messages[messagesLength - 1]?.sender?.name : null
+
+    const handleLastMessageSeen = (conversationId: string) => {
+        console.log({ pusherKey, conversationId, data, cond: data.id === conversationId })
+        if (data.id === conversationId) {
+            setLastMessageSeen(true)
+        }
+    }
+
+    useEffect(() => {
+        pusherClient.subscribe(pusherKey!)
+        pusherClient.bind("last:message:seen", handleLastMessageSeen)
+        return () => {
+            pusherClient.unbind("last:message:seen", handleLastMessageSeen)
+        }
+    }, [])
+
     return (
-        <div className="flex items-center space-x-3  hover:bg-gray-100 transition-all duration-300 p-2 cursor-pointer rounded-xl border-[1px] hover:border-gray-200 border-transparent" onClick={handleClick}>
-            <div className="flex items-center space-x-3">
+        <div className="w-full overflow-hidden  grow  flex items-center space-x-3  hover:bg-gray-100 transition-all duration-300 p-2 cursor-pointer rounded-xl border-[1px] hover:border-gray-200 border-transparent " onClick={handleClick}>
+            <div className='relative'>
                 {
                     data.isGroup ? (
                         <AvatarGroup data={data} />
@@ -68,10 +92,21 @@ const ConversationItem = ({ data, selected }: Props) => {
                         <AvatarComp user={otherUserData} />
                     )
                 }
-                <div className="flex flex-col">
-                    <span className="text-md font-bold text-neutral-950 caption-top">{data.name || otherUserData.name}</span>
-                    <span className={cn("text-[13px] font-normal text-gray-700 w-[94%]  truncate", !hasSeen && "text-blue-800 font-medium animate-pulse")}>{lastMessageText}</span>
-                </div>
+            </div>
+            <div className="grow  flex flex-col truncate pr-3">
+                <span className="text-md font-bold text-neutral-950 caption-top">{data.name || otherUserData.name}</span>
+                {
+                    !isNewConversation && data.isGroup ? (
+                        <div className={cn("text-[13px] font-medium text-gray-700 truncate flex items-center gap-x-1", !lastMessageSeen && "text-blue-700 font-bold animate-pulse")}>
+                            <span className="font-bold">{lastMessageSenderName}:</span>
+                            <span className="grow truncate">{lastMessageText}</span>
+                        </div>
+                    ) : (
+                        <div className={cn("text-[13px] font-medium text-gray-700 truncate flex items-center gap-x-4", !lastMessageSeen && "text-blue-700 font-bold animate-pulse")}>
+                            <span className="">{lastMessageText}</span>
+                        </div>
+                    )
+                }
             </div>
         </div>
     )

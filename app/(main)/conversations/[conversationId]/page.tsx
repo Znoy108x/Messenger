@@ -1,5 +1,4 @@
-import ConversationBody from '@/app/_components/Conversation/ConversationBody'
-import ConversationForm from '@/app/_components/Conversation/ConversationForm'
+import { ConversationBodyAndInputForm } from '@/app/_components/Conversation/ConversationBodyAndForm'
 import ConversationsHeader from '@/app/_components/Conversation/ConversationsHeader'
 import { getConversationByIdWithMessages } from '@/shared/actions/getConversationByIdWithMessages'
 import { FullConversationType } from '@/shared/types/Conversation'
@@ -26,8 +25,7 @@ const ConversationIdPage = async ({ params: { conversationId } }: ConversationId
     return (
         <div className="h-full w-full flex flex-col justify-between">
             <ConversationsHeader conversation={conversationByIdWithMessages} />
-            <ConversationBody conversation={conversationByIdWithMessages} />
-            <ConversationForm conversation={conversationByIdWithMessages} />
+            <ConversationBodyAndInputForm conversationByIdWithMessages={conversationByIdWithMessages}/>
         </div>
     )
 }

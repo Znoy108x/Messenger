@@ -1,6 +1,6 @@
 "use client"
-import { FullConversationType } from '@/shared/types/Conversation'
-import React, { useEffect, useRef, useState } from 'react'
+import { FullConversationType, FullMessageType } from '@/shared/types/Conversation'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { chatInputFormSchema, chatInputFormSchemaType, chatInputFormSchemaValidation } from '../Forms/chat-input-form'
@@ -17,11 +17,22 @@ import axios from 'axios'
 import { Button } from '@/shared/components/ui/button'
 import { ImageUp, SendHorizontal } from 'lucide-react'
 import { CldUploadButton } from "next-cloudinary"
+import { useRouter } from 'next13-progressbar'
+import { cn } from '@/shared/lib/utils'
+import { useConversation } from '@/shared/hooks/useConversation'
+import { pusherServer } from '@/shared/lib/pusher'
+import { useUserContext } from '@/shared/context/UserContext'
+import { User } from '@prisma/client'
+import { setUserTyping } from '@/shared/actions/setUserTyping'
 
-const ConversationForm = ({ conversation }: { conversation: FullConversationType }) => {
+const ConversationForm = ({ conversation, setMessageInState }: { conversation: FullConversationType, setMessageInState: (newMessage: FullMessageType) => void }) => {
 
+    const router = useRouter()
+    const [errMsg, setErrMsg] = useState("")
     const [render, setRender] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null);
+    const { conversationId } = useConversation()
+    const { currentUser } = useUserContext()
 
     const chatInputFormDefaultValue = {
         body: "",
@@ -32,17 +43,30 @@ const ConversationForm = ({ conversation }: { conversation: FullConversationType
         defaultValues: chatInputFormDefaultValue
     })
 
+    const formBodyValue = chatInputForm.watch("body")
+
     async function onSubmit(values: z.infer<chatInputFormSchemaType>) {
-        chatInputForm.reset()
-        try {
-            await axios.post("/api/messages", { ...values, conversationId: conversation.id })
-        } catch (err) {
-            console.log("User-Input-Send", err)
+        if (inputRef.current) {
+            inputRef.current.blur()
+        }
+        if (values.body) {
+            setErrMsg("")
+            chatInputForm.reset()
+            try {
+                const newMessage = ((await axios.post("/api/messages", { ...values, conversationId: conversation.id })).data as FullMessageType)
+                setMessageInState(newMessage)
+                router.refresh()
+            } catch (err) {
+                console.log("User-Input-Send", err)
+            }
+        } else {
+            setErrMsg("Message cannot be empty!")
         }
     }
 
     const handleImageUpload = async (result: any) => {
         const imageUrl = result?.info?.secure_url
+        setUserTyping(currentUser, conversationId, formBodyValue, false)
         await axios.post("/api/messages", {
             image: imageUrl,
             conversationId: conversation.id
@@ -50,19 +74,17 @@ const ConversationForm = ({ conversation }: { conversation: FullConversationType
     }
 
     useEffect(() => {
-        setRender(true)
-    }, [])
+        setErrMsg("")
+    }, [formBodyValue])
 
     useEffect(() => {
-        if (inputRef && inputRef.current) {
-            inputRef?.current.focus();
-        }
-    }, [inputRef]);
+        setRender(true)
+    }, [])
 
     if (!render) return null
 
     return (
-        <div className="w-full  bg-white py-4 pl-3 gap-x-4 flex items-start">
+        <div className="w-full  bg-white py-2 pl-3 gap-x-4 flex items-start h-[6%]">
             <CldUploadButton options={{ maxFiles: 1 }} uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME!} onSuccess={handleImageUpload}>
                 <Button variant={"ghost"} className='bg-messangerBlue hover:bg-messangerBlue'>
                     <ImageUp className="size-7 text-white" />
@@ -76,9 +98,12 @@ const ConversationForm = ({ conversation }: { conversation: FullConversationType
                         render={({ field }) => (
                             <FormItem className='grow'>
                                 <FormControl>
-                                    <Input placeholder="Send message!" {...field} className='flex-1 focus-visible:ring-messangerBlue' ref={inputRef} />
+                                    <Input placeholder={errMsg || "Send message!"}   {...field} onFocus={() => {
+                                        setUserTyping(currentUser, conversationId, formBodyValue, true)
+                                    }} onBlur={() => {
+                                        setUserTyping(currentUser, conversationId, formBodyValue, false)
+                                    }} className={cn('flex-1 ', errMsg ? "focus-visible:ring-red-600 placeholder:text-red-600" : "focus-visible:ring-messangerBlue")} ref={inputRef} />
                                 </FormControl>
-                                <FormMessage />
                             </FormItem>
                         )}
                     />

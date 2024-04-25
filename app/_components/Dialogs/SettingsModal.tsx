@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import {
     Dialog,
     DialogContent,
@@ -28,20 +28,18 @@ import { Loader } from 'lucide-react'
 import { UploadButton } from '@/shared/lib/uploadthing'
 import { ErrorNotification, PromiseNotification, SuccessNotification } from '../../../shared/lib/AxiosApiResNotification'
 import axios from "axios"
+import { useUserContext } from '@/shared/context/UserContext'
 
 const SettingsModal = ({ onOpenChange, open }: { open: boolean, onOpenChange: () => void }) => {
 
     const router = useRouter()
     const [sessionLoading, setSessionLoading] = useState(false)
     const [isUpdating, setIsUpdating] = useState(false)
-    const session = useSession()
-    if (!session) {
-        router.push("/")
-    }
+    const { currentUser } = useUserContext()
 
     const userInformationDefaultValues = {
-        name: session?.data?.user?.name!,
-        image: session?.data?.user?.image!
+        name: currentUser.name!,
+        image: currentUser.image!
     }
 
     const userInfoInputForm = useForm<z.infer<userUpdateFormSchemaType>>({
@@ -65,15 +63,6 @@ const SettingsModal = ({ onOpenChange, open }: { open: boolean, onOpenChange: ()
             onSuccess
         )
     }
-
-    useEffect(() => {
-        if (session?.status === "authenticated") {
-            setSessionLoading(false)
-        } else if (session?.status === "unauthenticated") {
-            router.push("/")
-        }
-    }, [session?.status, router])
-
 
     return (
         <>

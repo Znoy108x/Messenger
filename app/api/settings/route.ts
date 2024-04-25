@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/shared/lib/prismadb";
 import { getCurrentUser } from "@/shared/actions/getCurrentUser";
+import { pusherServer } from "@/shared/lib/pusher";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,6 +18,9 @@ export async function POST(req: NextRequest) {
         name,
         image,
       },
+    });
+    pusherServer.trigger("users-event", "user:profile:update", {
+      user: newUser,
     });
     return NextResponse.json(newUser);
   } catch (err) {

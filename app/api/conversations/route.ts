@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
               },
             ],
           },
+          adminId: currentUser.id,
         },
         include: {
           users: true,
@@ -81,6 +82,7 @@ export async function POST(req: NextRequest) {
             },
           ],
         },
+        adminId: currentUser.id,
       },
       include: {
         users: true,

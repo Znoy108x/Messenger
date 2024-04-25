@@ -35,25 +35,27 @@ model Session {
 }
 
 model User {
-  id               String         @id @default(auto()) @map("_id") @db.ObjectId
-  name             String?
-  email            String?        @unique
-  emailVerified    DateTime?
-  image            String?
-  hashedPassword   String?
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  id                 String         @id @default(auto()) @map("_id") @db.ObjectId
+  name               String?
+  email              String?        @unique
+  emailVerified      DateTime?
+  image              String?
+  hashedPassword     String?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
   // many-to-many
-  conversationsIds String[]       @db.ObjectId
-  conversations    Conversation[] @relation(fields: [conversationsIds], references: [id])
+  conversationsAdmin Conversation[] @relation("conversationAdmin")
   // many-to-many
-  seenMessageIds   String[]       @db.ObjectId
-  seenMessages     Message[]      @relation("seen", fields: [seenMessageIds], references: [id])
+  conversationsIds   String[]       @db.ObjectId
+  conversations      Conversation[] @relation(fields: [conversationsIds], references: [id])
+  // many-to-many
+  seenMessageIds     String[]       @db.ObjectId
+  seenMessages       Message[]      @relation("seen", fields: [seenMessageIds], references: [id])
   // one-many
-  accounts         Account[]
-  sessions         Session[]
+  accounts           Account[]
+  sessions           Session[]
   // one-many
-  messages         Message[]
+  messages           Message[]
 }
 
 model Conversation {
@@ -64,8 +66,11 @@ model Conversation {
   name          String?
   isGroup       Boolean?
   // one-many
+  adminId       String    @db.ObjectId
+  admin         User      @relation("conversationAdmin", fields: [adminId], references: [id])
+  // one-many
   messagesIds   String[]  @db.ObjectId
-  messages       Message[]
+  messages      Message[]
   // many-to-many
   userIds       String[]  @db.ObjectId
   users         User[]    @relation(fields: [userIds], references: [id])
