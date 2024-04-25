@@ -1,4 +1,3 @@
-"use client"
 import React from 'react'
 import DeskTopSidebar from './DeskTopSidebar'
 import MobileFooter from './MobileFooter'
