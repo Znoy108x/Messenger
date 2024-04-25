@@ -14,7 +14,7 @@ const AvatarGroup = ({ data }: { data: FullConversationType }) => {
     }
 
     return (
-        <div className="size-11 shrink-0">
+        <div className="size-11 shrink-0 relative">
             {slicedUsers.map((user, index) => (
                 <div
                     key={user.id}

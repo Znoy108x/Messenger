@@ -19,7 +19,7 @@ const EmptyResource = ({heading ,image ,message , fromUsers}: EmptyResourceProps
     }
 
   return (
-      <div className="flex flex-col items-center justify-center bg-slate-50 shadow-sm rounded-lg px-3 py-5 space-y-4">
+      <div className="flex flex-col items-center justify-center bg-slate-50 shadow-sm rounded-lg px-3 py-5 space-y-4 my-auto">
           <Image src={image} width={100} height={100} className="size-20 object-cover" alt="User" />
           <div className="flex flex-col items-center">
               <span className="text-xl font-bold text-neutral-900">

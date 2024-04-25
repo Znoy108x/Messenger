@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import prisma from "@/shared/lib/prismadb";
+import { pusherServer } from "@/shared/lib/pusher";
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,6 +29,7 @@ export async function POST(req: NextRequest) {
         hashedPassword,
       },
     });
+    pusherServer.trigger("users-event", "user:new", user);
     return NextResponse.json(user);
   } catch (err) {
     return new NextResponse("Something went wrong!", {

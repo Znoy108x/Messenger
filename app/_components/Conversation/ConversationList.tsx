@@ -112,7 +112,13 @@ const ConversationList = ({ conversations, users }: Props) => {
                         </div>
                     </div>
                 ) : (
-                    <div className="h-full w-full flex items-center justify-center">
+                    <div className="h-full w-full flex flex-col">
+                        <div className="w-full flex justify-between mb-4 pt-4">
+                            <div className="text-2xl font-bold text-neutral-800">
+                                Message
+                            </div>
+                            <CreateGroupDialog users={users} />
+                        </div>
                         <EmptyResource image={"/message.png"} heading={"No conversations found!"} message="Please first create conversation by click on user from users list" />
                     </div>
                 )

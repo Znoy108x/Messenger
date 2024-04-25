@@ -5,7 +5,7 @@ import Message from './Message'
 import { useConversation } from '@/shared/hooks/useConversation'
 import axios from 'axios'
 
-const ConversationBody = ({ messages, ref }: { messages: FullMessageType[], ref: RefObject<HTMLDivElement> }) => {
+const ConversationBody = ({ messages, ref, isGroup }: { messages: FullMessageType[], ref: RefObject<HTMLDivElement>, isGroup: boolean | null }) => {
 
     const { conversationId } = useConversation()
 
@@ -17,7 +17,7 @@ const ConversationBody = ({ messages, ref }: { messages: FullMessageType[], ref:
         <div ref={ref} className="w-full h-[86%] overflow-y-auto bg-gray-50 pb-40">
             {
                 messages.map((message, index) => (
-                    <Message key={message.id} data={message} isLast={index === messages.length - 1} />
+                    <Message key={message.id} data={message} isLast={index === messages.length - 1} isGroupMessage={isGroup} />
                 ))
             }
         </div>

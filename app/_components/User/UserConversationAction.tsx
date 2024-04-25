@@ -13,16 +13,24 @@ import AvatarComp from '../UI/AvatarComp'
 import { useOtherUser } from '@/shared/hooks/useOtherUser'
 import { format } from 'date-fns'
 import DeleteConversationDialog from '../Dialogs/DeleteConversationDialog'
+import LeageGroupDialog from '../Dialogs/DeleteGroupDialog'
+import { useUserContext } from '@/shared/context/UserContext'
 
 const UserConversationAction = ({ conversation }: { conversation: FullConversationType }) => {
 
     const otherUsers = useOtherUser(conversation)
+    const {currentUser} = useUserContext()
+
     const joinedDate = useMemo(() => {
         return format(new Date(otherUsers.createdAt), 'PP')
     }, [otherUsers?.createdAt])
+
     const title = useMemo(() => {
         return conversation.name || otherUsers.name
     }, [conversation.name, otherUsers.name])
+
+    const isAdmin = conversation.adminId === currentUser.id
+
     const statusText = useMemo(() => {
         if (conversation.isGroup) {
             return `${conversation.users.length} members`
@@ -39,7 +47,7 @@ const UserConversationAction = ({ conversation }: { conversation: FullConversati
             </SheetTrigger>
             <SheetContent className='space-y-5 flex flex-col pt-8'>
                 <SheetHeader>
-                    <SheetTitle className='text-2xl font-bold text-neutral-900'>{conversation?.isGroup ? title : "Conversation Details"}</SheetTitle>
+                    <SheetTitle className='text-2xl font-bold text-neutral-900 capitalize'>{conversation?.isGroup ? title : "Conversation Details"}</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col space-y-1 grow overflow-y-auto ">
                     <span className="text-xl font-bold text-neutral-800">{statusText}</span>
@@ -70,6 +78,9 @@ const UserConversationAction = ({ conversation }: { conversation: FullConversati
                 </div>
                 {
                     !conversation.isGroup && <DeleteConversationDialog />
+                }
+                {
+                    conversation.isGroup && isAdmin  && <LeageGroupDialog />
                 }
             </SheetContent>
         </Sheet>

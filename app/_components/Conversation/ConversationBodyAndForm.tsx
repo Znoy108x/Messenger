@@ -77,7 +77,7 @@ export const ConversationBodyAndInputForm = ({ conversationByIdWithMessages }: {
 
     return (
         <>
-            <ConversationBody messages={messages} ref={bottomRef} />
+            <ConversationBody messages={messages} ref={bottomRef} isGroup={conversationByIdWithMessages.isGroup}/>
             <ConversationForm conversation={conversationByIdWithMessages} setMessageInState={setMessageInState} />
         </>
     )

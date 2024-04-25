@@ -8,7 +8,7 @@ import { useUserContext } from '@/shared/context/UserContext'
 const UsersComponent = ({ users, children }: { children: React.ReactNode, users: User[] }) => {
 
     const [usersList, setUsersList] = useState<User[]>(users)
-    const {handleUserUpdate} = useUserContext()
+    const { handleUserUpdate } = useUserContext()
 
     const handleProfileUpdate = ({ user }: { user: User }) => {
         const isPresent = usersList.findIndex(ele => ele.id === user.id)
@@ -17,16 +17,26 @@ const UsersComponent = ({ users, children }: { children: React.ReactNode, users:
             oldUserData[isPresent] = user
             setUsersList([...oldUserData])
         }
-        if(isPresent === -1){
+        if (isPresent === -1) {
             handleUserUpdate(user)
+        }
+    }
+
+    const handleNewUserCreate = (user: User) => {
+        const isPresent = usersList.findIndex(ele => ele.id === user.id)
+        if (isPresent === -1) {
+            setUsersList([...usersList, user])
         }
     }
 
     useEffect(() => {
         pusherClient.subscribe("users-event")
         pusherClient.bind("user:profile:update", handleProfileUpdate)
+        pusherClient.bind("user:new", handleNewUserCreate)
+
         return () => {
-            pusherClient.unbind("user:profile:update")
+            pusherClient.unbind("user:profile:update", handleProfileUpdate)
+            pusherClient.unbind("user:new", handleNewUserCreate)
         }
     }, [])
 

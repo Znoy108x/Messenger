@@ -32,9 +32,7 @@ export function UserSeenList({ seenUsersList }: Props) {
                     variant="ghost"
                     role="combobox"
                     aria-expanded={open}
-                    className="space-x-3 text-messangerBlue"
-                    onClick={() => console.log(seenUsersList)}
-                >
+                    className="space-x-3 text-messangerBlue">
                     <VenetianMask className="ml-2 size-6 shrink-0 opacity-50 text-messangerBlue" />
                     <span className="text-xs">
                         Seen By

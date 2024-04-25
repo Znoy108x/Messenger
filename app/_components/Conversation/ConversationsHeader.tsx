@@ -13,6 +13,7 @@ import { useParams } from 'next/navigation'
 import { User } from '@prisma/client'
 import { cn } from '@/shared/lib/utils'
 import { useUserContext } from '@/shared/context/UserContext'
+import toast from 'react-hot-toast'
 
 interface ConversationHeaderProps {
     conversation: FullConversationType
@@ -42,14 +43,38 @@ const ConversationsHeader = ({
         }
     }
 
+    const handleConversationLeft = ({ conversation, leftBy: { id, name } }: {
+        conversation: FullConversationType,
+        leftBy: {
+            id: string,
+            name: string,
+        },
+    }) => {
+        if (id !== currentUser.id) {
+            toast(`${name} left this conversation group!!`,
+                {
+                    icon: '👋🏻',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                }
+            );
+        }
+    }
+
     useEffect(() => {
         const convId = conversationId as string
         pusherClient.subscribe(convId)
         pusherClient.bind("member:typing", handleConversationMemberTyping)
+        pusherClient.bind("conversation:left", handleConversationLeft)
+
 
         return () => {
             pusherClient.unsubscribe(convId)
-            pusherClient.unbind("member:typing")
+            pusherClient.unbind("member:typing", handleConversationMemberTyping)
+            pusherClient.unbind("conversation:left", handleConversationLeft)
         }
     }, [conversationId])
 

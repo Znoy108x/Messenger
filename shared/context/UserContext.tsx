@@ -28,7 +28,6 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
     }
 
     const handleUserUpdate = (user: User) => {
-        console.log({ "newUpdatedUser": user })
         setCurrentUser((currentUser) => {
             return { ...currentUser, image: user.image }
         })
