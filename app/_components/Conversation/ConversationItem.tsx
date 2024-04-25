@@ -13,7 +13,7 @@ interface Props {
     selected?: boolean
 }
 
-const ConversationItem = ({ data, selected }: Props) => {
+const ConversationItem = ({ data }: Props) => {
 
     const router = useRouter()
     const session = useSession()
@@ -63,9 +63,9 @@ const ConversationItem = ({ data, selected }: Props) => {
         }
     }, [lastMessage])
 
-    const messagesLength = data.messages.length
+    const messagesLength = data?.messages?.length || 0
     const isNewConversation = messagesLength === 0
-    const lastMessageSenderName = data.messages[messagesLength - 1]?.sender?.name
+    const lastMessageSenderName = messagesLength > 0 ? data.messages[messagesLength - 1]?.sender?.name : null
 
     const handleLastMessageSeen = (conversationId: string) => {
         console.log({ pusherKey, conversationId, data, cond: data.id === conversationId })
@@ -96,7 +96,7 @@ const ConversationItem = ({ data, selected }: Props) => {
             <div className="grow  flex flex-col truncate pr-3">
                 <span className="text-md font-bold text-neutral-950 caption-top">{data.name || otherUserData.name}</span>
                 {
-                    !isNewConversation ? (
+                    !isNewConversation && data.isGroup ? (
                         <div className={cn("text-[13px] font-medium text-gray-700 truncate flex items-center gap-x-1", !lastMessageSeen && "text-blue-700 font-bold animate-pulse")}>
                             <span className="font-bold">{lastMessageSenderName}:</span>
                             <span className="grow truncate">{lastMessageText}</span>

@@ -35,7 +35,7 @@ const Message = ({ data, isLast, isGroupMessage }: { data: FullMessageType, isLa
                         )
                     }
                     {
-                        isGroupMessage && isOwn && <UserSeenList seenUsersList={otherUserSeenList} />
+                        isLast && isGroupMessage && isOwn && <UserSeenList seenUsersList={otherUserSeenList} />
                     }
                 </div>
             </div>
