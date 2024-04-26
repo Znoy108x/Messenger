@@ -4,7 +4,7 @@ import AvatarComp from '../UI/AvatarComp'
 import { FullConversationType } from '@/shared/types/Conversation'
 import { useOtherUser } from '@/shared/hooks/useOtherUser'
 import Link from 'next/link'
-import { ChevronLeft, EllipsisVertical } from 'lucide-react'
+import { ChevronLeft } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import UserConversationAction from '../User/UserConversationAction'
 import AvatarGroup from '../UI/AvatarGroup'
@@ -24,16 +24,17 @@ const ConversationsHeader = ({
 }: ConversationHeaderProps) => {
 
     const { conversationId } = useParams()
-    const otherUserDetails = useOtherUser(conversation)
+    const [currentConversation, setCurrentConversation] = useState<FullConversationType>(conversation)
+    const otherUserDetails = useOtherUser(currentConversation)
     const [userTyping, setUserTyping] = useState<User>({} as User)
     const { currentUser } = useUserContext()
 
     const statusText = useMemo(() => {
-        if (conversation.isGroup) {
-            return `${conversation.users.length} members`
+        if (currentConversation.isGroup) {
+            return `${currentConversation.users.length} members`
         }
         return "Active"
-    }, [conversation])
+    }, [currentConversation])
 
     const handleConversationMemberTyping = ({ user, isTyping }: { user: User, isTyping: boolean }) => {
         if (isTyping) {
@@ -43,38 +44,25 @@ const ConversationsHeader = ({
         }
     }
 
-    const handleConversationLeft = ({ conversation, leftBy: { id, name } }: {
-        conversation: FullConversationType,
-        leftBy: {
-            id: string,
-            name: string,
-        },
-    }) => {
-        if (id !== currentUser.id) {
-            toast(`${name} left this conversation group!!`,
-                {
-                    icon: '👋🏻',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
-            );
+    const handleConversationLeft = ({ convContent, leftUserId }: { convContent: FullConversationType, leftUserId: string }) => {
+
+        if (currentUser.id !== leftUserId) {
+            setCurrentConversation((prevCon) => {
+                return convContent
+            })
         }
     }
 
     useEffect(() => {
         const convId = conversationId as string
         pusherClient.subscribe(convId)
+        pusherClient.subscribe(currentUser.email!)
         pusherClient.bind("member:typing", handleConversationMemberTyping)
-        pusherClient.bind("conversation:left", handleConversationLeft)
-
-
+        pusherClient.bind("group:member:left", handleConversationLeft)
         return () => {
             pusherClient.unsubscribe(convId)
             pusherClient.unbind("member:typing", handleConversationMemberTyping)
-            pusherClient.unbind("conversation:left", handleConversationLeft)
+            pusherClient.unbind("group:member:left", handleConversationLeft)
         }
     }, [conversationId])
 
@@ -93,19 +81,19 @@ const ConversationsHeader = ({
                             </Link>
                         </Button>
                         {
-                            conversation.isGroup ? (
-                                <AvatarGroup data={conversation} />
+                            currentConversation.isGroup ? (
+                                <AvatarGroup data={currentConversation} />
                             ) : (
                                 <AvatarComp user={otherUserDetails} />
                             )
                         }
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-bold text-xl text-neutral-900 capitalize">{conversation.name || otherUserDetails.name}</span>
+                        <span className="font-bold text-xl text-neutral-900 capitalize">{currentConversation.name || otherUserDetails.name}</span>
                         <span className="text-neutral-500 text-sm font-normal">{statusText}</span>
                     </div>
                 </div>
-                <UserConversationAction conversation={conversation} />
+                <UserConversationAction conversation={currentConversation} />
             </div>
             <div className={cn("h-[30%]  bg-gray-50", showTypingHeader && "")}>
                 {

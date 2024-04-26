@@ -50,7 +50,6 @@ export function CreateGroupDialog({ users }: { users: User[] }) {
 
     async function onSubmit(values: z.infer<createGroupFormSchemaType>) {
         const formattedIds = values.members.map(ele => ({ value: ele }))
-        console.log(formattedIds)
         PromiseNotification(
             axios.post("/api/conversations", { name: values.name, members: formattedIds, isGroup: true }),
             "Group created successfully!",

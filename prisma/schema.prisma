@@ -47,7 +47,9 @@ model User {
   conversationsAdmin Conversation[] @relation("conversationAdmin")
   // many-to-many
   conversationsIds   String[]       @db.ObjectId
-  conversations      Conversation[] @relation(fields: [conversationsIds], references: [id])
+  conversations      Conversation[] @relation("userGroupRelation", fields: [conversationsIds], references: [id])
+  leftGroupIds       String[]       @db.ObjectId
+  wasMemberOf        Conversation[] @relation("userLeftGroupRelation", fields: [leftGroupIds], references: [id])
   // many-to-many
   seenMessageIds     String[]       @db.ObjectId
   seenMessages       Message[]      @relation("seen", fields: [seenMessageIds], references: [id])
@@ -72,8 +74,10 @@ model Conversation {
   messagesIds   String[]  @db.ObjectId
   messages      Message[]
   // many-to-many
+  leftUserIds   String[]  @db.ObjectId
+  leftUsers     User[]    @relation("userLeftGroupRelation", fields: [leftUserIds], references: [id])
   userIds       String[]  @db.ObjectId
-  users         User[]    @relation(fields: [userIds], references: [id])
+  users         User[]    @relation("userGroupRelation", fields: [userIds], references: [id])
 }
 
 model Message {

@@ -13,13 +13,13 @@ import AvatarComp from '../UI/AvatarComp'
 import { useOtherUser } from '@/shared/hooks/useOtherUser'
 import { format } from 'date-fns'
 import DeleteConversationDialog from '../Dialogs/DeleteConversationDialog'
-import LeageGroupDialog from '../Dialogs/DeleteGroupDialog'
 import { useUserContext } from '@/shared/context/UserContext'
+import { LeaveGroupDialog } from '../Dialogs/LeaveGroupDialog'
 
 const UserConversationAction = ({ conversation }: { conversation: FullConversationType }) => {
 
     const otherUsers = useOtherUser(conversation)
-    const {currentUser} = useUserContext()
+    const { currentUser } = useUserContext()
 
     const joinedDate = useMemo(() => {
         return format(new Date(otherUsers.createdAt), 'PP')
@@ -77,10 +77,13 @@ const UserConversationAction = ({ conversation }: { conversation: FullConversati
                     </div>
                 </div>
                 {
-                    !conversation.isGroup && <DeleteConversationDialog />
+                    conversation.isGroup && isAdmin && <DeleteConversationDialog />
                 }
                 {
-                    conversation.isGroup && isAdmin  && <LeageGroupDialog />
+                    conversation.isGroup && !isAdmin && <LeaveGroupDialog />
+                }
+                {
+                    !conversation.isGroup  && <DeleteConversationDialog />
                 }
             </SheetContent>
         </Sheet>

@@ -68,7 +68,6 @@ const ConversationItem = ({ data }: Props) => {
     const lastMessageSenderName = messagesLength > 0 ? data.messages[messagesLength - 1]?.sender?.name : null
 
     const handleLastMessageSeen = (conversationId: string) => {
-        console.log({ pusherKey, conversationId, data, cond: data.id === conversationId })
         if (data.id === conversationId) {
             setLastMessageSeen(true)
         }

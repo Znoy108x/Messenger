@@ -29,10 +29,12 @@ import { UploadButton } from '@/shared/lib/uploadthing'
 import { ErrorNotification, PromiseNotification, SuccessNotification } from '../../../shared/lib/AxiosApiResNotification'
 import axios from "axios"
 import { useUserContext } from '@/shared/context/UserContext'
+import { cn } from '@/shared/lib/utils'
 
 const SettingsModal = ({ onOpenChange, open }: { open: boolean, onOpenChange: () => void }) => {
 
     const router = useRouter()
+    const [isImageUploading, setIsImageUploading] = useState(false)
     const [sessionLoading, setSessionLoading] = useState(false)
     const [isUpdating, setIsUpdating] = useState(false)
     const { currentUser } = useUserContext()
@@ -56,7 +58,6 @@ const SettingsModal = ({ onOpenChange, open }: { open: boolean, onOpenChange: ()
     async function onSubmit(values: z.infer<userUpdateFormSchemaType>) {
         onOpenChange()
         setIsUpdating(true)
-        console.log(values)
         PromiseNotification(
             axios.post("/api/settings", values),
             "Successfully upadated your profile!",
@@ -104,15 +105,29 @@ const SettingsModal = ({ onOpenChange, open }: { open: boolean, onOpenChange: ()
                                                 <FormLabel>Image</FormLabel>
                                                 <FormControl>
                                                     <div className="flex items-center space-x-4">
-                                                        <Image className='size-[80px] rounded-full object-cover' width={100} height={100} src={field.value || "/placeholder.jpg"} alt="userimage" />
+                                                        <div className='relative size-[80px] rounded-full overflow-hidden'>
+                                                            <Image className='object-cover' fill src={field.value || "/placeholder.jpg"} alt="userimage" />
+                                                            {
+                                                                isImageUploading && (
+                                                                    <div className={cn('w-full h-full flex items-center justify-center -z-50', isImageUploading && "z-50")}>
+                                                                        <Loader className='animate-spin text-messangerBlue size-7' />
+                                                                    </div>
+                                                                )
+                                                            }
+                                                        </div>
                                                         <UploadButton
                                                             endpoint="imageUploader"
                                                             onClientUploadComplete={(res) => {
                                                                 field.onChange(res[0]?.url)
                                                                 SuccessNotification("Image Uploaded")
+                                                                setIsImageUploading(false)
                                                             }}
                                                             onUploadError={(error: Error) => {
                                                                 ErrorNotification(`ERROR! ${error.message}`)
+                                                                setIsImageUploading(false)
+                                                            }}
+                                                            onUploadBegin={() => {
+                                                                setIsImageUploading(true)
                                                             }}
                                                         />
                                                     </div>

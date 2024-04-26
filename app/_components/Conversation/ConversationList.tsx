@@ -79,16 +79,57 @@ const ConversationList = ({ conversations, users }: Props) => {
             }
         }
 
+        const handleConversationLeft = ({ convContent, leftUserId }: { convContent: FullConversationType, leftUserId: string }) => {
+            if (currentUser.id === leftUserId) {
+                setAllConversations((prevConversations) => {
+                    const newConvData = prevConversations.filter((conversation) => {
+                        if (conversation.id !== convContent.id) {
+                            return conversation
+                        }
+                    })
+                    return [...newConvData]
+                })
+            }
+        }
+
+        const handleGroupMemberLeft = ({ convContent, leftUserId, leftUserName }: { convContent: FullConversationType, leftUserId: string, leftUserName: string }) => {
+            if (currentUser.id !== leftUserId) {
+                setAllConversations((prevConversations) => {
+                    return prevConversations.map((conversation) => {
+                        if (conversation.id !== convContent.id) {
+                            return conversation
+                        } else {
+                            return convContent
+                        }
+                    })
+                })
+                // toast(`${leftUserName} left ${convContent.name} Conversation!!`,
+                //     {
+                //         icon: '🥲',
+                //         style: {
+                //             borderRadius: '10px',
+                //             background: '#333',
+                //             color: '#fff',
+                //         },
+                //     }
+                // );
+            }
+        }
+
         pusherClient.subscribe(pusherKey)
         pusherClient.bind("conversation:new", newConversationHandler)
         pusherClient.bind("conversation:update", conversationUpdateHandler)
         pusherClient.bind("conversation:remove", conversationDeleteHandler)
+        pusherClient.bind("you:left", handleConversationLeft)
+        pusherClient.bind("group:member:left", handleGroupMemberLeft)
 
         return () => {
             pusherClient.unsubscribe(pusherKey)
             pusherClient.unbind("conversation:new", newConversationHandler)
             pusherClient.unbind("conversation:update", conversationUpdateHandler)
             pusherClient.unbind("conversation:remove", conversationDeleteHandler)
+            pusherClient.unbind("you:left", handleConversationLeft)
+            pusherClient.bind("group:member:left", handleGroupMemberLeft)
         }
     }, [pusherKey, router, conversationId])
 

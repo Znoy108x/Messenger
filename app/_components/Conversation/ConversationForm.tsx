@@ -1,16 +1,15 @@
 "use client"
 import { FullConversationType, FullMessageType } from '@/shared/types/Conversation'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {  useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { chatInputFormSchema, chatInputFormSchemaType, chatInputFormSchemaValidation } from '../Forms/chat-input-form'
+import { chatInputFormSchema, chatInputFormSchemaType  } from '../Forms/chat-input-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
     Form,
     FormControl,
     FormField,
     FormItem,
-    FormMessage,
 } from "@/shared/components/ui/form"
 import { Input } from "@/shared/components/ui/input"
 import axios from 'axios'
@@ -20,9 +19,7 @@ import { CldUploadButton } from "next-cloudinary"
 import { useRouter } from 'next13-progressbar'
 import { cn } from '@/shared/lib/utils'
 import { useConversation } from '@/shared/hooks/useConversation'
-import { pusherServer } from '@/shared/lib/pusher'
 import { useUserContext } from '@/shared/context/UserContext'
-import { User } from '@prisma/client'
 import { setUserTyping } from '@/shared/actions/setUserTyping'
 
 const ConversationForm = ({ conversation, setMessageInState }: { conversation: FullConversationType, setMessageInState: (newMessage: FullMessageType) => void }) => {

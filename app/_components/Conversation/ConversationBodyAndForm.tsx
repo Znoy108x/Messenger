@@ -5,10 +5,12 @@ import ConversationForm from "./ConversationForm"
 import { pusherClient } from "@/shared/lib/pusher"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { FullConversationType, FullMessageType } from "@/shared/types/Conversation"
+import { useUserContext } from "@/shared/context/UserContext"
 
 export const ConversationBodyAndInputForm = ({ conversationByIdWithMessages }: { conversationByIdWithMessages: FullConversationType }) => {
 
-    const bottomRef = useRef<HTMLDivElement>(null)
+    const { currentUser } = useUserContext()
+    const [leftUserIds, setLeftUserIds] = useState<string[]>(conversationByIdWithMessages.leftUserIds || [])
     const { id: conversationId } = conversationByIdWithMessages
     const [messages, setMessages] = useState(conversationByIdWithMessages.messages)
 
@@ -19,14 +21,7 @@ export const ConversationBodyAndInputForm = ({ conversationByIdWithMessages }: {
             }
             return currMess
         }))
-        scrollToBottom()
     }
-
-    const scrollToBottom = useCallback(() => {
-        if (bottomRef.current) {
-            bottomRef.current.scrollIntoView({ behavior: "smooth", block: "end" })
-        }
-    }, []);
 
     useEffect(() => {
 
@@ -41,7 +36,6 @@ export const ConversationBodyAndInputForm = ({ conversationByIdWithMessages }: {
                 }
                 return [...current, message]
             })
-            scrollToBottom()
         }
 
         const messageUpdateHandler = (newMessage: FullMessageType) => {
@@ -60,25 +54,27 @@ export const ConversationBodyAndInputForm = ({ conversationByIdWithMessages }: {
             }
         }
 
+        const handleConversationLeft = ({ convContent, leftUserId }: { convContent: FullConversationType, leftUserId: string }) => {
+            setLeftUserIds(convContent.leftUserIds)
+        }
+
+        pusherClient.subscribe(currentUser.email!)
         pusherClient.bind("messages:new", newMessageHandler)
         pusherClient.bind("message:update", messageUpdateHandler)
+        pusherClient.bind("group:member:left", handleConversationLeft)
 
         return () => {
             pusherClient.unsubscribe(conversationId)
             pusherClient.unbind("messages:new")
             pusherClient.unbind("message:update")
+            pusherClient.unbind("group:member:left", handleConversationLeft)
         }
-    }, [conversationId, messages, scrollToBottom])
-
-
-    useEffect(() => {
-        scrollToBottom()
-    }, [messages, scrollToBottom])
+    }, [conversationId, messages])
 
     return (
-        <>
-            <ConversationBody messages={messages} ref={bottomRef} isGroup={conversationByIdWithMessages.isGroup}/>
+        <div className="h-[90%] w-full bg-blue-400">
+            <ConversationBody messages={messages} isGroup={conversationByIdWithMessages.isGroup} leftUserIds={leftUserIds} />
             <ConversationForm conversation={conversationByIdWithMessages} setMessageInState={setMessageInState} />
-        </>
+        </div>
     )
 }
